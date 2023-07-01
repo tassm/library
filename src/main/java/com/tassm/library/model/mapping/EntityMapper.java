@@ -1,6 +1,7 @@
 package com.tassm.library.model.mapping;
 
 import com.tassm.library.model.dto.BookDTO;
+import com.tassm.library.model.dto.CreateBookDTO;
 import com.tassm.library.model.entity.Book;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -12,6 +13,8 @@ public interface EntityMapper {
     BookDTO bookEntityToDTO(Book book);
 
     Book bookDTOtoEntity(BookDTO book);
+
+    Book createBookDtoToEntity(CreateBookDTO book);
 
     void updateBookFromDTO(BookDTO dto, @MappingTarget Book entity);
 }

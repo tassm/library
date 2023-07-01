@@ -1,11 +1,15 @@
 package com.tassm.library.controller;
 
+import com.tassm.library.exception.ResourceConflictException;
+import com.tassm.library.exception.ResourceNotFoundException;
 import com.tassm.library.model.dto.BookDTO;
+import com.tassm.library.model.dto.CreateBookDTO;
 import com.tassm.library.model.entity.Book;
 import com.tassm.library.model.mapping.EntityMapper;
 import com.tassm.library.repository.AuthorRepository;
 import com.tassm.library.repository.BookRepository;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,12 +41,12 @@ public class BookController {
     }
 
     @PostMapping(produces = "application/json")
-    public ResponseEntity<BookDTO> create(@RequestBody BookDTO dto) {
-        Book book = mapper.bookDTOtoEntity(dto);
+    public ResponseEntity<CreateBookDTO> create(@RequestBody @Valid CreateBookDTO dto) {
+        Book book = mapper.createBookDtoToEntity(dto);
         try {
             bookRepository.saveAndFlush(book);
         } catch (ConstraintViolationException e) {
-            throw new RuntimeException("there was a key conflict");
+            throw new ResourceConflictException("The book with this ISBN already exists");
         }
         return ResponseEntity.ok().body(null);
     }
@@ -51,7 +55,7 @@ public class BookController {
     public ResponseEntity<BookDTO> getByIsbn(@PathVariable(name = "isbn") String isbn) {
         Optional<Book> book = bookRepository.findByIsbn(isbn);
         if (book.isEmpty()) {
-            throw new RuntimeException("a problem");
+            throw new ResourceNotFoundException("Book with ISBN " + isbn + " was not found");
         }
         BookDTO dto = mapper.bookEntityToDTO(book.get());
         return ResponseEntity.ok(dto);
@@ -59,11 +63,12 @@ public class BookController {
 
     @PatchMapping(value = "/{isbn}", produces = "application/json")
     public ResponseEntity<BookDTO> patchBook(
-            @PathVariable(name = "isbn") String isbn, @RequestBody BookDTO dto) {
+            @PathVariable(name = "isbn") String isbn, @RequestBody @Valid BookDTO dto) {
         Optional<Book> book = bookRepository.findByIsbn(isbn);
         if (book.isEmpty()) {
-            throw new RuntimeException("a problem");
+            throw new ResourceNotFoundException("Book with ISBN " + isbn + " was not found");
         }
+        // should we be able to update an ISBN or not?
         mapper.updateBookFromDTO(dto, book.get());
         bookRepository.saveAndFlush(book.get());
         return ResponseEntity.ok(dto);
@@ -73,7 +78,7 @@ public class BookController {
     public ResponseEntity<Void> deleteByIsbn(@PathVariable(name = "isbn") String isbn) {
         Optional<Book> book = bookRepository.findByIsbn(isbn);
         if (book.isEmpty()) {
-            throw new RuntimeException("lol");
+            throw new ResourceNotFoundException("Book with ISBN " + isbn + " was not found");
         }
         bookRepository.deleteByIsbn(isbn);
         bookRepository.flush();
