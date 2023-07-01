@@ -33,6 +33,12 @@ public class Author {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private String dob;
+
+    @Column(nullable = false)
+    private String nationality;
+
     @ManyToMany(mappedBy = "authors")
     private Set<Book> books;
 }

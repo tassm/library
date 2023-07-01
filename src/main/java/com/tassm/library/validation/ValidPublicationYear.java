@@ -11,10 +11,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.time.Year;
 
-// @Target(ElementType.METHOD)
-// @Retention(RetentionPolicy.RUNTIME)
-// public @interface ValidPublicationYear {}
-
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = ValidPublicationYear.Validator.class)
@@ -34,7 +30,7 @@ public @interface ValidPublicationYear {
             }
 
             int currentYear = Year.now().getValue();
-            return publicationYear < 1 && publicationYear <= currentYear;
+            return publicationYear > 0 && publicationYear <= currentYear;
         }
     }
 }

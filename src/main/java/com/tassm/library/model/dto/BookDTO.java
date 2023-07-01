@@ -1,6 +1,7 @@
 package com.tassm.library.model.dto;
 
 import com.tassm.library.validation.ValidPublicationYear;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -15,11 +16,11 @@ import org.hibernate.validator.constraints.ISBN;
 @EqualsAndHashCode
 public class BookDTO {
 
-    @ISBN public String isbn;
+    @ISBN private String isbn;
 
-    public String title;
+    private String title;
 
-    public String authorName;
+    private Set<AuthorDTO> authors;
 
-    @ValidPublicationYear public int publicationYear;
+    @ValidPublicationYear private int publicationYear;
 }

@@ -5,7 +5,7 @@ import com.tassm.library.exception.ResourceNotFoundException;
 import com.tassm.library.model.dto.BookDTO;
 import com.tassm.library.model.dto.CreateBookDTO;
 import com.tassm.library.model.entity.Book;
-import com.tassm.library.model.mapping.EntityMapper;
+import com.tassm.library.model.mapping.BookMapper;
 import com.tassm.library.repository.AuthorRepository;
 import com.tassm.library.repository.BookRepository;
 import jakarta.validation.ConstraintViolationException;
@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.hibernate.validator.constraints.ISBN;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -31,10 +31,10 @@ public class BookController {
 
     @Autowired BookRepository bookRepository;
     @Autowired AuthorRepository authorRepository;
-    @Autowired EntityMapper mapper;
+    @Autowired BookMapper mapper;
 
     @GetMapping(produces = "application/json")
-    public ResponseEntity<List<BookDTO>> getMany(@RequestParam(name = "isbn") String isbn) {
+    public ResponseEntity<List<BookDTO>> getMany() {
         List<BookDTO> books = new ArrayList<>();
         bookRepository.findAll().forEach(b -> books.add(mapper.bookEntityToDTO(b)));
         return ResponseEntity.ok(books);
@@ -43,6 +43,7 @@ public class BookController {
     @PostMapping(produces = "application/json")
     public ResponseEntity<CreateBookDTO> create(@RequestBody @Valid CreateBookDTO dto) {
         Book book = mapper.createBookDtoToEntity(dto);
+        // look for the authors if they already exist
         try {
             bookRepository.saveAndFlush(book);
         } catch (ConstraintViolationException e) {
@@ -52,7 +53,8 @@ public class BookController {
     }
 
     @GetMapping(value = "/{isbn}", produces = "application/json")
-    public ResponseEntity<BookDTO> getByIsbn(@PathVariable(name = "isbn") String isbn) {
+    public ResponseEntity<BookDTO> getByIsbn(
+            @Valid @ISBN @PathVariable(name = "isbn") String isbn) {
         Optional<Book> book = bookRepository.findByIsbn(isbn);
         if (book.isEmpty()) {
             throw new ResourceNotFoundException("Book with ISBN " + isbn + " was not found");
