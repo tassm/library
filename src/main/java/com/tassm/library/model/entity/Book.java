@@ -17,10 +17,9 @@ import lombok.Data;
 @Entity
 @Data
 @Builder
-@Table(name = "books", indexes = {
-    @Index(columnList = "publicationYear"),
-    @Index(columnList = "isbn")
-})
+@Table(
+        name = "books",
+        indexes = {@Index(columnList = "publicationYear"), @Index(columnList = "isbn")})
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
