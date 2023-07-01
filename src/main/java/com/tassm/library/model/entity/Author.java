@@ -6,7 +6,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -21,7 +23,7 @@ import lombok.Setter;
 @EqualsAndHashCode
 @Table(
         name = "authors",
-        indexes = {@Index(columnList = "surname"), @Index(columnList = "names, surname")})
+        indexes = {@Index(columnList = "name")})
 public class Author {
 
     @Id
@@ -29,8 +31,8 @@ public class Author {
     private Long id;
 
     @Column(nullable = false)
-    private String names;
+    private String name;
 
-    @Column(nullable = false)
-    private String surname;
+    @ManyToMany(mappedBy = "authors")
+    private Set<Book> books;
 }
