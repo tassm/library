@@ -1,0 +1,10 @@
+# --- Active profiles ---
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:h2}
+
+# --- DB timeout --
+javax:
+  persistence:
+    query:
+      timeout: 10000

@@ -7,10 +7,18 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Data
+@Getter
+@Setter
+@RequiredArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
 @Table(
         name = "authors",
         indexes = {@Index(columnList = "surname"), @Index(columnList = "names, surname")})
