@@ -11,10 +11,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
 
-    @Query
     Optional<Book> findByIsbn(String isbn);
 
+    @Query("SELECT DISTINCT b FROM Book b LEFT JOIN FETCH b.authors WHERE b.isbn=:isbn")
+    Optional<Book> findByIsbnWithAuthors(@Param("isbn") String isbn);
+
     @Modifying
-    @Query("delete from Book b where b.isbn=:isbn")
+    @Query("DELETE FROM Book b WHERE b.isbn=:isbn")
     void deleteByIsbn(@Param("isbn") String isbn);
 }

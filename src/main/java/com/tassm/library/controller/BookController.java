@@ -1,6 +1,5 @@
 package com.tassm.library.controller;
 
-import com.tassm.library.exception.ResourceConflictException;
 import com.tassm.library.exception.ResourceNotFoundException;
 import com.tassm.library.model.dto.BookDTO;
 import com.tassm.library.model.dto.CreateBookDTO;
@@ -8,8 +7,10 @@ import com.tassm.library.model.entity.Book;
 import com.tassm.library.model.mapping.BookMapper;
 import com.tassm.library.repository.AuthorRepository;
 import com.tassm.library.repository.BookRepository;
-import jakarta.validation.ConstraintViolationException;
+import com.tassm.library.service.BookService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +33,7 @@ public class BookController {
     @Autowired BookRepository bookRepository;
     @Autowired AuthorRepository authorRepository;
     @Autowired BookMapper mapper;
+    @Autowired BookService bookService;
 
     @GetMapping(produces = "application/json")
     public ResponseEntity<List<BookDTO>> getMany() {
@@ -41,21 +43,17 @@ public class BookController {
     }
 
     @PostMapping(produces = "application/json")
-    public ResponseEntity<CreateBookDTO> create(@RequestBody @Valid CreateBookDTO dto) {
-        Book book = mapper.createBookDtoToEntity(dto);
-        // look for the authors if they already exist
-        try {
-            bookRepository.saveAndFlush(book);
-        } catch (ConstraintViolationException e) {
-            throw new ResourceConflictException("The book with this ISBN already exists");
-        }
-        return ResponseEntity.ok().body(null);
+    public ResponseEntity<BookDTO> create(@RequestBody @Valid CreateBookDTO dto) {
+        BookDTO created = bookService.saveBookAndAuthors(dto);
+        URI uri = URI.create("/book/" + created.getIsbn());
+        return ResponseEntity.created(uri).body(created);
     }
 
+    @Transactional
     @GetMapping(value = "/{isbn}", produces = "application/json")
     public ResponseEntity<BookDTO> getByIsbn(
             @Valid @ISBN @PathVariable(name = "isbn") String isbn) {
-        Optional<Book> book = bookRepository.findByIsbn(isbn);
+        Optional<Book> book = bookRepository.findByIsbnWithAuthors(isbn);
         if (book.isEmpty()) {
             throw new ResourceNotFoundException("Book with ISBN " + isbn + " was not found");
         }

@@ -4,10 +4,8 @@ import com.tassm.library.model.dto.BookDTO;
 import com.tassm.library.model.dto.CreateBookDTO;
 import com.tassm.library.model.entity.Author;
 import com.tassm.library.model.entity.Book;
-
 import java.util.HashSet;
 import java.util.Set;
-
 import org.springframework.stereotype.Component;
 
 /*
@@ -44,13 +42,16 @@ public class BookMapperImpl implements BookMapper {
             return null;
         }
 
-        Book.BookBuilder book1 = Book.builder();
+        Book book1 = new Book();
 
-        book1.isbn(book.getIsbn());
-        book1.publicationYear(book.getPublicationYear());
-        book1.title(book.getTitle());
+        book1.setIsbn(book.getIsbn());
+        if (book.getPublicationYear() != null) {
+            book1.setPublicationYear(book.getPublicationYear());
+        }
+        book1.setTitle(book.getTitle());
+        book1.setAuthors(new HashSet<>());
 
-        return book1.build();
+        return book1;
     }
 
     @Override
@@ -59,15 +60,16 @@ public class BookMapperImpl implements BookMapper {
             return null;
         }
 
-        Book.BookBuilder book1 = Book.builder();
+        Book book1 = new Book();
 
-        book1.isbn(book.getIsbn());
+        book1.setIsbn(book.getIsbn());
         if (book.getPublicationYear() != null) {
-            book1.publicationYear(book.getPublicationYear());
+            book1.setPublicationYear(book.getPublicationYear());
         }
-        book1.title(book.getTitle());
+        book1.setTitle(book.getTitle());
+        book1.setAuthors(new HashSet<>());
 
-        return book1.build();
+        return book1;
     }
 
     @Override

@@ -20,7 +20,7 @@ public class BookDTO {
 
     private String title;
 
-    private Set<AuthorDTO> authors;
+    private Set<String> authorNames;
 
-    @ValidPublicationYear private int publicationYear;
+    @ValidPublicationYear private Integer publicationYear;
 }

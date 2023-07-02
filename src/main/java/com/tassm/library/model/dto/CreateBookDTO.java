@@ -26,7 +26,7 @@ public class CreateBookDTO {
     private String title;
 
     @NotNull(message = "Author information is required")
-    private Set<AuthorDTO> authors;
+    private Set<String> authorNames;
 
     @NotNull(message = "Publication year is required")
     @ValidPublicationYear
