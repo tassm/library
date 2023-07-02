@@ -13,10 +13,14 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     Optional<Book> findByIsbn(String isbn);
 
-    @Query("SELECT DISTINCT b FROM Book b LEFT JOIN FETCH b.authors WHERE b.isbn=:isbn")
+    /*
+     * NOTE: This is how I intended to retrieve the nested author along with the book
+     * For some reason I cannot understand this does not appear to retrieve the authors
+     */
+    @Query("SELECT DISTINCT b FROM Book b LEFT JOIN FETCH b.authors WHERE b.isbn = :isbn")
     Optional<Book> findByIsbnWithAuthors(@Param("isbn") String isbn);
 
     @Modifying
-    @Query("DELETE FROM Book b WHERE b.isbn=:isbn")
+    @Query("DELETE FROM Book b WHERE b.isbn = :isbn")
     void deleteByIsbn(@Param("isbn") String isbn);
 }

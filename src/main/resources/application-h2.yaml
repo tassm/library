@@ -4,6 +4,7 @@ spring:
     activate:
       on-profile: h2
   jpa:
+    open-in-view: false
     hibernate:
       ddl-auto: create-drop
   datasource:
