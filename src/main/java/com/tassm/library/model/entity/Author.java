@@ -3,7 +3,6 @@ package com.tassm.library.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -26,7 +25,6 @@ import lombok.Setter;
  */
 
 @Entity
-@Embeddable
 @Getter
 @Setter
 @RequiredArgsConstructor
@@ -47,5 +45,6 @@ public class Author {
             cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             mappedBy = "authors")
     @JsonIgnore
+    @EqualsAndHashCode.Exclude
     private Set<Book> books = new HashSet<>();
 }

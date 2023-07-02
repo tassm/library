@@ -3,10 +3,10 @@ spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:h2}
   jpa:
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
 
 # --- DB timeout --
 javax:

@@ -45,7 +45,8 @@ public class GlobalExceptionHandler {
         ErrorDTO error =
                 new ErrorDTO(
                         HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                        "An unhandled exception occurred: " + exception.getMessage());
+                        "An unhandled exception occurred, see appliction logs");
+        exception.printStackTrace();
         return new ResponseEntity<ErrorDTO>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

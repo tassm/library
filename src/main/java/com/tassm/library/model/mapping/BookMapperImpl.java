@@ -77,9 +77,14 @@ public class BookMapperImpl implements BookMapper {
         if (dto == null) {
             return;
         }
-
-        entity.setIsbn(dto.getIsbn());
-        entity.setPublicationYear(dto.getPublicationYear());
-        entity.setTitle(dto.getTitle());
+        if (dto.getIsbn() != null) {
+            entity.setIsbn(dto.getIsbn());
+        }
+        if (dto.getPublicationYear() != null) {
+            entity.setPublicationYear(dto.getPublicationYear());
+        }
+        if (dto.getTitle() != null) {
+            entity.setTitle(dto.getTitle());
+        }
     }
 }

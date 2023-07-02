@@ -10,7 +10,6 @@ import com.tassm.library.model.mapping.BookMapper;
 import com.tassm.library.repository.AuthorRepository;
 import com.tassm.library.repository.BookRepository;
 import jakarta.transaction.Transactional;
-import jakarta.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -40,27 +39,9 @@ public class BookService {
         if (bookRepository.findByIsbn(dto.getIsbn()).isPresent()) {
             throw new ResourceConflictException("The book with this ISBN already exists");
         }
-        
-        Set<Author> authors = new HashSet<>();
-        for (String s : dto.getAuthorNames()) {
-            var a = authorRepository.findByName(s);
-            if (a.isPresent()) {
-                authors.add(a.get());
-            } else {
-                Author newAuthor = new Author();
-                newAuthor.setName(s);
-                try {
-                    newAuthor = authorRepository.save(newAuthor);
-                } catch (ConstraintViolationException e) {
-                    throw new ResourceConflictException("Author already exists");
-                }
-                authors.add(newAuthor);
-            }
-        }
+        Set<Author> authors = saveAuthorsFromNames(dto.getAuthorNames());
         book.getAuthors().addAll(authors);
-        bookRepository.save(book);
-        authorRepository.flush();
-        bookRepository.flush();
+        bookRepository.saveAndFlush(book);
         return bookMapper.bookEntityToDTO(book);
     }
 
@@ -70,9 +51,9 @@ public class BookService {
         if (book.isEmpty()) {
             throw new ResourceNotFoundException("Book with ISBN " + isbn + " was not found");
         }
-        var authors = authorRepository.findAuthorNamesByIsbn(isbn);
-        var dto =  bookMapper.bookEntityToDTO(book.get());
-        dto.setAuthorNames(authors);
+        // var authors = authorRepository.findAuthorNamesByIsbn(isbn);
+        var dto = bookMapper.bookEntityToDTO(book.get());
+        // dto.setAuthorNames(authors);
         return dto;
     }
 
@@ -82,8 +63,10 @@ public class BookService {
         if (book.isEmpty()) {
             throw new ResourceNotFoundException("Book with ISBN " + isbn + " was not found");
         }
-        // should we be able to update an ISBN or not?
         bookMapper.updateBookFromDTO(updatedBook, book.get());
+        // update the author records associated with a book
+        Set<Author> updatedAuthors = saveAuthorsFromNames(updatedBook.getAuthorNames());
+        book.get().setAuthors(updatedAuthors);
         Book res = bookRepository.saveAndFlush(book.get());
         return bookMapper.bookEntityToDTO(res);
     }
@@ -96,5 +79,22 @@ public class BookService {
         }
         bookRepository.deleteByIsbn(isbn);
         bookRepository.flush();
+    }
+
+    public Set<Author> saveAuthorsFromNames(Iterable<String> authorNames) {
+        Set<Author> authors = new HashSet<>();
+        for (String s : authorNames) {
+            var a = authorRepository.findByName(s);
+            if (a.isPresent()) {
+                authors.add(a.get());
+            } else {
+                Author newAuthor = new Author();
+                newAuthor.setName(s);
+                newAuthor = authorRepository.save(newAuthor);
+                authors.add(newAuthor);
+            }
+        }
+        authorRepository.flush();
+        return authors;
     }
 }
