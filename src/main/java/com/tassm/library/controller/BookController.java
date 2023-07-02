@@ -1,5 +1,6 @@
 package com.tassm.library.controller;
 
+import com.tassm.library.exception.BadRequestException;
 import com.tassm.library.model.dto.BookDTO;
 import com.tassm.library.model.dto.CreateBookDTO;
 import com.tassm.library.service.BookService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -25,8 +27,21 @@ public class BookController {
     @Autowired BookService bookService;
 
     @GetMapping(produces = "application/json")
-    public ResponseEntity<List<BookDTO>> getMany() {
-        return ResponseEntity.ok(bookService.findAllBooks());
+    public ResponseEntity<List<BookDTO>> getMany(
+            @RequestParam(required = false) String authorName,
+            @RequestParam(required = false) Integer rangeStart,
+            @RequestParam(required = false) Integer rangeEnd) {
+        // TODO: this kind of validation is commonly useful and should be rewritten into an aspect
+        // and annotation
+        if (authorName != null && (rangeStart != null || rangeEnd != null)) {
+            throw new BadRequestException(
+                    "Only one of author or year range query can be specified!");
+        }
+        if ((rangeStart != null && rangeEnd == null) || (rangeEnd != null && rangeStart == null)) {
+            throw new BadRequestException(
+                    "Both rangeStart and rangeEnd must be provided for year range query");
+        }
+        return ResponseEntity.ok(bookService.findBooks(authorName, rangeStart, rangeEnd));
     }
 
     @PostMapping(produces = "application/json")
@@ -40,14 +55,14 @@ public class BookController {
     public ResponseEntity<BookDTO> getByIsbn(
             @Valid @ISBN @PathVariable(name = "isbn") String isbn) {
 
-        BookDTO dto = bookService.findBookAndAuthorsByIsbn(isbn);
+        BookDTO dto = bookService.findBookByIsbn(isbn);
         return ResponseEntity.ok(dto);
     }
 
     @PatchMapping(value = "/{isbn}", produces = "application/json")
     public ResponseEntity<BookDTO> patchBook(
             @PathVariable(name = "isbn") String isbn, @RequestBody @Valid BookDTO dto) {
-        dto = bookService.updateBook(isbn, dto);
+        dto = bookService.updateBookAndAuthors(isbn, dto);
         return ResponseEntity.ok(dto);
     }
 

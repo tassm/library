@@ -26,9 +26,17 @@ public class BookService {
     @Autowired BookMapper bookMapper;
 
     @Transactional
-    public List<BookDTO> findAllBooks() {
+    public List<BookDTO> findBooks(String authorName, Integer rangeStart, Integer rangeEnd) {
         List<BookDTO> books = new ArrayList<>();
-        bookRepository.findAll().forEach(b -> books.add(bookMapper.bookEntityToDTO(b)));
+        if (authorName != null) {
+            bookRepository
+                    .findByAuthorName(authorName)
+                    .forEach(b -> books.add(bookMapper.bookEntityToDTO(b)));
+        } else if (rangeStart != null) {
+            bookRepository
+                    .findBetweenYearRange(rangeStart, rangeEnd)
+                    .forEach(b -> books.add(bookMapper.bookEntityToDTO(b)));
+        }
         return books;
     }
 
@@ -46,7 +54,7 @@ public class BookService {
     }
 
     @Transactional
-    public BookDTO findBookAndAuthorsByIsbn(String isbn) {
+    public BookDTO findBookByIsbn(String isbn) {
         Optional<Book> book = bookRepository.findByIsbn(isbn);
         if (book.isEmpty()) {
             throw new ResourceNotFoundException("Book with ISBN " + isbn + " was not found");
@@ -58,7 +66,7 @@ public class BookService {
     }
 
     @Transactional
-    public BookDTO updateBook(String isbn, BookDTO updatedBook) {
+    public BookDTO updateBookAndAuthors(String isbn, BookDTO updatedBook) {
         Optional<Book> book = bookRepository.findByIsbn(isbn);
         if (book.isEmpty()) {
             throw new ResourceNotFoundException("Book with ISBN " + isbn + " was not found");
