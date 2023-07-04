@@ -1,6 +1,7 @@
 package com.tassm.library.exception;
 
 import com.tassm.library.model.dto.ErrorDTO;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -32,10 +33,26 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<ErrorDTO>(error, HttpStatus.BAD_REQUEST);
     }
 
+    // TODO, maybe we can just catch one of these and throw the other
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorDTO> handleException(
             MethodArgumentNotValidException exception, ServletWebRequest request) {
-        ErrorDTO error = new ErrorDTO(HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+        ErrorDTO error =
+                new ErrorDTO(
+                        HttpStatus.BAD_REQUEST.value(),
+                        "Invalid request body or parameter - try again");
+        exception.printStackTrace();
+        return new ResponseEntity<ErrorDTO>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorDTO> handleException(
+            ConstraintViolationException exception, ServletWebRequest request) {
+        ErrorDTO error =
+                new ErrorDTO(
+                        HttpStatus.BAD_REQUEST.value(),
+                        "Invalid request body or parameter - try again");
+        exception.printStackTrace();
         return new ResponseEntity<ErrorDTO>(error, HttpStatus.BAD_REQUEST);
     }
 

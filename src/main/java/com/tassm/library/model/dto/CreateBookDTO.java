@@ -3,6 +3,7 @@ package com.tassm.library.model.dto;
 import com.tassm.library.validation.ValidPublicationYear;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -26,6 +27,7 @@ public class CreateBookDTO {
     private String title;
 
     @NotNull(message = "Author information is required")
+    @Size(min = 1)
     private Set<String> authorNames;
 
     @NotNull(message = "Publication year is required")

@@ -1,6 +1,7 @@
 package com.tassm.library.model.dto;
 
 import com.tassm.library.validation.ValidPublicationYear;
+import jakarta.validation.constraints.Size;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -20,6 +21,7 @@ public class BookDTO {
 
     private String title;
 
+    @Size(min = 1)
     private Set<String> authorNames;
 
     @ValidPublicationYear private Integer publicationYear;

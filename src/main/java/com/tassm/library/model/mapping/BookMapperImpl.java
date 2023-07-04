@@ -87,4 +87,22 @@ public class BookMapperImpl implements BookMapper {
             entity.setTitle(dto.getTitle());
         }
     }
+
+    @Override
+    public CreateBookDTO bookDTOToCreateBookDTO(BookDTO bookDto) {
+        return new CreateBookDTO(
+                bookDto.getIsbn(),
+                bookDto.getTitle(),
+                bookDto.getAuthorNames(),
+                bookDto.getPublicationYear());
+    }
+
+    @Override
+    public BookDTO createBookDTO(CreateBookDTO createBookDTO) {
+        return new BookDTO(
+                createBookDTO.getIsbn(),
+                createBookDTO.getTitle(),
+                createBookDTO.getAuthorNames(),
+                createBookDTO.getPublicationYear());
+    }
 }
