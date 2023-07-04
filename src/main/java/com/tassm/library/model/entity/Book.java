@@ -42,7 +42,7 @@ public class Book {
 
     @ManyToMany(
             fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+            cascade = {CascadeType.MERGE})
     @JoinTable(
             name = "book_author",
             joinColumns = @JoinColumn(name = "book_id"),

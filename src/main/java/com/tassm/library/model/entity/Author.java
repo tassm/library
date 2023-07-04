@@ -42,7 +42,7 @@ public class Author {
 
     @ManyToMany(
             fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            cascade = {CascadeType.MERGE},
             mappedBy = "authors")
     @JsonIgnore
     @EqualsAndHashCode.Exclude

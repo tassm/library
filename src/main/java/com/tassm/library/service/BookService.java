@@ -59,9 +59,7 @@ public class BookService {
         if (book.isEmpty()) {
             throw new ResourceNotFoundException("Book with ISBN " + isbn + " was not found");
         }
-        // var authors = authorRepository.findAuthorNamesByIsbn(isbn);
         var dto = bookMapper.bookEntityToDTO(book.get());
-        // dto.setAuthorNames(authors);
         return dto;
     }
 
@@ -73,8 +71,10 @@ public class BookService {
         }
         bookMapper.updateBookFromDTO(updatedBook, book.get());
         // update the author records associated with a book
-        Set<Author> updatedAuthors = saveAuthorsFromNames(updatedBook.getAuthorNames());
-        book.get().setAuthors(updatedAuthors);
+        if (updatedBook.getAuthorNames() != null) {
+            Set<Author> updatedAuthors = saveAuthorsFromNames(updatedBook.getAuthorNames());
+            book.get().setAuthors(updatedAuthors);
+        }
         Book res = bookRepository.saveAndFlush(book.get());
         return bookMapper.bookEntityToDTO(res);
     }
@@ -89,7 +89,7 @@ public class BookService {
         bookRepository.flush();
     }
 
-    public Set<Author> saveAuthorsFromNames(Iterable<String> authorNames) {
+    private Set<Author> saveAuthorsFromNames(Iterable<String> authorNames) {
         Set<Author> authors = new HashSet<>();
         for (String s : authorNames) {
             var a = authorRepository.findByName(s);
