@@ -12,7 +12,7 @@ spring:
     generate-ddl: true
   datasource:
     platform: postgres
-    url: jdbc:postgresql://localhost:15432/postgres
-    username: postgres
-    password: postgres
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/postgres}
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
     driverClassName: org.postgresql.Driver

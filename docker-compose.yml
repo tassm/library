@@ -1,17 +1,29 @@
 version: '3'
 
 services:
-  database:
+  postgres:
     image: 'bitnami/postgresql:latest'
     ports:
-      - 15432:5432
+      - 5432:5432
     environment:
       POSTGRES_PASSWORD: postgres
     networks:
       - postgres-network
     volumes:
       - ./db-data/:/var/lib/postgresql/data/
-
+  library-app:
+    image: library:latest
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres
+    environment:
+      SPRING_PROFILES_ACTIVE: postgres
+      POSTGRES_URL: jdbc:postgresql://postgres:5432/postgres
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - postgres-network
 networks: 
   postgres-network:
     driver: bridge
