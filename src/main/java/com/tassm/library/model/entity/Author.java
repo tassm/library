@@ -19,6 +19,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /*
+ * Hibernate/JPA entity to represent the authors in the database.
+ * Includes Many-to-Many association with books.
+ * *
  * ASSUMPTION: for the sake of the exercise I am assuming that we cannot have conflicting author names
  * There isn't a way to guarantee that author details are unique in the real world. One option would be
  * to add DOB, Nationality etc but that still can't guarantee uniqueness.

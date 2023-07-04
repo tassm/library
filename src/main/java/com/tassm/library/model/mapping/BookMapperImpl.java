@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 /*
  * NOTE: For some reason I couldn't get mapstruct to play nice, maybe I configured it wrong?
- * Here is some mapping code that does the same stuff anyway...
+ * Here is some (partially mapstruct generated) mapping code that does the same stuff anyway.
  */
 @Component
 public class BookMapperImpl implements BookMapper {

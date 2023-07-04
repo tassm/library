@@ -6,6 +6,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+/*
+ * DTO class to represent error information returned to the user
+ */
+
 @Getter
 @Setter
 @RequiredArgsConstructor

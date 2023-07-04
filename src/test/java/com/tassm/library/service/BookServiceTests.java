@@ -24,6 +24,8 @@ import org.springframework.test.context.ActiveProfiles;
 /*
  * This class should probably mock the repository layer below it however for the sake of
  * this exercise we will treat it as an integration test using in memory h2 database.
+ *
+ * NOTE: This is not as extensive as I would like, I would spend more time on this in future and separate the repository tests into their own classes.
  */
 @SpringBootTest
 @ActiveProfiles("h2")

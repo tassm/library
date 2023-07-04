@@ -20,6 +20,11 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+/*
+ * Hibernate/JPA entity to represent the book in the database.
+ * Includes Many-to-Many association with authors.
+ */
+
 @Entity
 @Getter
 @Setter

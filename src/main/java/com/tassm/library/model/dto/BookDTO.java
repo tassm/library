@@ -10,6 +10,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.ISBN;
 
+/*
+ * DTO class to represent the book during update (all fields are optional)
+ */
+
 @Getter
 @Setter
 @RequiredArgsConstructor

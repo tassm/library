@@ -25,6 +25,16 @@ public class BookService {
     @Autowired AuthorRepository authorRepository;
     @Autowired BookMapper bookMapper;
 
+    /**
+     * Find books by either author name or by a range of publication years If publicationYear ranges
+     * are used then both must be provided. Filtering by both author and publication year is NOT
+     * IMPLEMENTED
+     *
+     * @param authorName the name of the author to filter by
+     * @param rangeStart the start of the publicationYear range
+     * @param rangeEnd the end of the publicationYear range
+     * @return
+     */
     @Transactional
     public List<BookDTO> findBooks(String authorName, Integer rangeStart, Integer rangeEnd) {
         List<BookDTO> books = new ArrayList<>();
@@ -40,6 +50,13 @@ public class BookService {
         return books;
     }
 
+    /**
+     * Save a book and associated authors in the database. Saves authors and then saves books with a
+     * reference to the persisted authors.
+     *
+     * @param dto the DTO representing the new book to save
+     * @return BookDTO representing the saved book
+     */
     @Transactional
     public BookDTO saveBookAndAuthors(CreateBookDTO dto) {
         Book book = bookMapper.createBookDtoToEntity(dto);
@@ -53,6 +70,12 @@ public class BookService {
         return bookMapper.bookEntityToDTO(book);
     }
 
+    /**
+     * Retrieve a book by its unique ISBN, throws a ResourceNotFoundException if it does not exist.
+     *
+     * @param isbn unique ISBN of the book
+     * @return BookDTO representing the matching book
+     */
     @Transactional
     public BookDTO findBookByIsbn(String isbn) {
         Optional<Book> book = bookRepository.findByIsbn(isbn);
@@ -63,6 +86,13 @@ public class BookService {
         return dto;
     }
 
+    /**
+     * Update a book by its unique ISBN, throws a ResourceNotFoundException if it does not exist.
+     *
+     * @param isbn unique ISBN of the book to update
+     * @param updatedBook DTO including any fields which are to be updated
+     * @return BookDTO representing the updated book
+     */
     @Transactional
     public BookDTO updateBookAndAuthors(String isbn, BookDTO updatedBook) {
         Optional<Book> book = bookRepository.findByIsbn(isbn);
@@ -79,6 +109,11 @@ public class BookService {
         return bookMapper.bookEntityToDTO(res);
     }
 
+    /**
+     * Delete a book by its unique ISBN, throws a ResourceNotFoundException if it does not exist.
+     *
+     * @param isbn unique ISBN of the book to delete
+     */
     @Transactional
     public void deleteBook(String isbn) {
         Optional<Book> book = bookRepository.findByIsbn(isbn);

@@ -12,6 +12,13 @@ import org.springframework.web.context.request.ServletWebRequest;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    /**
+     * Handle resource not found as 404
+     *
+     * @param exception
+     * @param request
+     * @return ResponseEntity<ErrorDTO> The response generated describing the error
+     */
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorDTO> handleException(
             ResourceNotFoundException exception, ServletWebRequest request) {
@@ -19,6 +26,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<ErrorDTO>(error, HttpStatus.NOT_FOUND);
     }
 
+    /**
+     * Handle resource conflict as HTTP 409
+     *
+     * @param exception
+     * @param request
+     * @return ResponseEntity<ErrorDTO> The response generated describing the error
+     */
     @ExceptionHandler(ResourceConflictException.class)
     public ResponseEntity<ErrorDTO> handleException(
             ResourceConflictException exception, ServletWebRequest request) {
@@ -26,6 +40,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<ErrorDTO>(error, HttpStatus.CONFLICT);
     }
 
+    /**
+     * Handle validation error as as HTTP 400
+     *
+     * @param exception
+     * @param request
+     * @return ResponseEntity<ErrorDTO> The response generated describing the error
+     */
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorDTO> handleException(
             BadRequestException exception, ServletWebRequest request) {
@@ -33,7 +54,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<ErrorDTO>(error, HttpStatus.BAD_REQUEST);
     }
 
-    // TODO, maybe we can just catch one of these and throw the other
+    /**
+     * Handle validation error as as HTTP 400
+     *
+     * @param exception
+     * @param request
+     * @return ResponseEntity<ErrorDTO> The response generated describing the error
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorDTO> handleException(
             MethodArgumentNotValidException exception, ServletWebRequest request) {
@@ -45,6 +72,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<ErrorDTO>(error, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * Handle constraint violation error as as HTTP 400
+     *
+     * @param exception
+     * @param request
+     * @return ResponseEntity<ErrorDTO> The response generated describing the error
+     */
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorDTO> handleException(
             ConstraintViolationException exception, ServletWebRequest request) {
@@ -56,6 +90,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<ErrorDTO>(error, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * Handle any other exception as HTTP 500
+     *
+     * @param exception
+     * @param request
+     * @return ResponseEntity<ErrorDTO> The response generated describing the error
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDTO> handleException(
             Exception exception, ServletWebRequest request) {
